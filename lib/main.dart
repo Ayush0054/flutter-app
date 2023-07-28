@@ -1,3 +1,4 @@
+import 'package:first/gym_partner.dart';
 import 'package:first/home_page.dart';
 import 'package:first/profile_page.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class RootPage extends StatefulWidget {
 
 class _RootPageState extends State<RootPage> {
   int currentPage = 0;
-  List<Widget> pages = const [HomePage(), ProfilePage()];
+  List<Widget> pages = const [HomePage(), GymPartner(), ProfilePage()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +46,8 @@ class _RootPageState extends State<RootPage> {
       bottomNavigationBar: NavigationBar(
         destinations: [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(
+              icon: Icon(Icons.people), label: 'Gym Partners'),
           NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
         ],
         onDestinationSelected: (int index) {
