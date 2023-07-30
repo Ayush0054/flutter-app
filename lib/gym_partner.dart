@@ -1,15 +1,109 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
-class GymPartner extends StatefulWidget {
-  const GymPartner({super.key});
+void main() => runApp(const VideoPlayerApp());
 
-  @override
-  State<GymPartner> createState() => _GymPartnerState();
-}
+class VideoPlayerApp extends StatelessWidget {
+  const VideoPlayerApp({super.key});
 
-class _GymPartnerState extends State<GymPartner> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return const MaterialApp(
+      title: 'Video Player Demo',
+      home: VideoPlayerScreen(),
+    );
+  }
+}
+
+class VideoPlayerScreen extends StatefulWidget {
+  const VideoPlayerScreen({super.key});
+
+  @override
+  State<VideoPlayerScreen> createState() => _VideoPlayerScreenState();
+}
+
+class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
+  late VideoPlayerController _controller;
+  late Future<void> _initializeVideoPlayerFuture;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Create and store the VideoPlayerController. The VideoPlayerController
+    // offers several different constructors to play videos from assets, files,
+    // or the internet.
+    _controller = VideoPlayerController.networkUrl(
+      Uri.parse(
+        'https://joy1.videvo.net/videvo_files/video/free/video0469/large_watermarked/_import_6174f7e5631083.79269933_preview.mp4',
+      ),
+    );
+    // _controller = VideoPlayerController.asset('videos/mike.mp4');
+// https://cdn.discordapp.com/attachments/1131969987268071424/1135279191982624839/mike.mp4
+    // Initialize the controller and store the Future for later use.
+    _initializeVideoPlayerFuture = _controller.initialize();
+
+    // Use the controller to loop the video.
+    _controller.setLooping(true);
+  }
+
+  @override
+  void dispose() {
+    // Ensure disposing of the VideoPlayerController to free up resources.
+    _controller.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Butterfly Video'),
+      ),
+      // Use a FutureBuilder to display a loading spinner while waiting for the
+      // VideoPlayerController to finish initializing.
+      body: FutureBuilder(
+        future: _initializeVideoPlayerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            // If the VideoPlayerController has finished initialization, use
+            // the data it provides to limit the aspect ratio of the video.
+            return AspectRatio(
+              aspectRatio: _controller.value.aspectRatio,
+              // Use the VideoPlayer widget to display the video.
+              child: VideoPlayer(_controller),
+            );
+          } else {
+            // If the VideoPlayerController is still initializing, show a
+            // loading spinner.
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Wrap the play or pause in a call to `setState`. This ensures the
+          // correct icon is shown.
+          setState(() {
+            // If the video is playing, pause it.
+            if (_controller.value.isPlaying) {
+              _controller.pause();
+            } else {
+              // If the video is paused, play it.
+              _controller.play();
+            }
+          });
+        },
+        // Display the correct icon depending on the state of the player.
+        child: Icon(
+          _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+        ),
+      ),
+    );
   }
 }

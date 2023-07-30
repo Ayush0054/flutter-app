@@ -29,20 +29,20 @@ class RootPage extends StatefulWidget {
 
 class _RootPageState extends State<RootPage> {
   int currentPage = 0;
-  List<Widget> pages = const [HomePage(), GymPartner(), ProfilePage()];
+  List<Widget> pages = const [HomePage(), VideoPlayerScreen(), ProfilePage()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: pages[currentPage],
       appBar: AppBar(
-        title: const Text("Gym App"),
+        title: const Text("First/Testing App"),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          debugPrint("floating actionbutton");
-        },
-        child: const Icon(Icons.add),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     debugPrint("floating actionbutton");
+      //   },
+      //   child: const Icon(Icons.add),
+      // ),
       bottomNavigationBar: NavigationBar(
         destinations: [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
